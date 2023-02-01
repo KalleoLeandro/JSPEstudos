@@ -1,0 +1,12 @@
+create database curso-jsp;
+
+use curso-jsp;
+
+create table model_login(
+	id bigserial primary key,
+	login character varying(200) not null,
+	senha character varying(200) not null,
+	constraint login_unique unique (login)
+); 
+
+insert into model_login(login,senha) values ('admin','admin');

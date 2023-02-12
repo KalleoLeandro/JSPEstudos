@@ -1,6 +1,10 @@
 /**
- * 
+ * Scripts JS
+ * @author Kalleo Leandro dos Santos Leal
+ * @version 1.0
+ * @since 11/02/2023
  */
+
 function limparForm(){
 	var elements = document.getElementById('form-user').elements;
 	for(p = 0;p < elements.length;p++){

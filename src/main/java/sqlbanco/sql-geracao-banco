@@ -10,3 +10,12 @@ create table model_login(
 ); 
 
 insert into model_login(login,senha) values ('admin','admin');
+
+alter table model_login add column nome varchar(255);
+alter table model_login add column email varchar(255);
+
+update table model_login set nome = 'Administrador';
+update table model_login set email = 'teste@teste';
+
+alter table model_login alter column nome set not null;
+alter table model_login alter column email set not null;

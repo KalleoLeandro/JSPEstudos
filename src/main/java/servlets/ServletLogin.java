@@ -33,6 +33,16 @@ public class ServletLogin extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		String acao = request.getParameter("acao");
+		if(acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("logout")) {
+			request.getSession().invalidate();
+			RequestDispatcher redirecionar = request.getRequestDispatcher("/index.jsp");
+			redirecionar.forward(request, response);
+		} else {
+			doPost(request,response);
+		}
+		
+		
 	}
 	
 	/*Recebe os parâmetros do corpo da requisição*/
@@ -47,7 +57,7 @@ public class ServletLogin extends HttpServlet {
 				ModelLogin modelLogin = new ModelLogin(login,senha);
 				if(daoLoginRepository.validarAutenticacao(modelLogin)) {
 					
-					request.getSession().setAttribute("usuario", modelLogin.getLogin());
+					request.getSession().setAttribute("usuario", modelLogin.getLogin().toUpperCase());
 					
 					if(url == null || url.equals("null")) {
 						url = "principal/principal.jsp";

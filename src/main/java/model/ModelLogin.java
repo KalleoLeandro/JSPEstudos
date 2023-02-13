@@ -39,6 +39,13 @@ public class ModelLogin implements Serializable{
 		this.senha = senha;
 	}
 	
+	public ModelLogin(Long id,String nome, String email, String login) {		
+		this.id = id;
+		this.nome = nome;
+		this.email = email;
+		this.login = login;		
+	}
+	
 	public ModelLogin(String login, String senha) {		
 		this.login = login;
 		this.senha = senha;

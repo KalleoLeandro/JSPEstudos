@@ -40,3 +40,35 @@ function deletarUsuario(){
 	}	
 }
 
+function buscarUsuarios(){
+	var elemento = document.getElementById('nomeBusca').value;
+	var urlAction = document.getElementById('form-user').action;
+	if(elemento != null && elemento.trim() != ''){
+		$.ajax({
+			method: "GET",
+			url: urlAction,
+			data: "nomeBusca=" + elemento + "&acao=buscarUser",
+			success: function(response){
+				var json = JSON.parse(response);
+				debugger;
+				$('#tabelaResultados > tbody > tr').remove();
+				for(var i = 0; i < json.length; i++ ){
+					$('#tabelaResultados > tbody').append('<tr>' + 
+					'<td>'+ json[i].id + '</td>' + 
+					'<td>' + json[i].nome + '</td>' + 
+					'<td><button type="button" class="btn btn-info" onclick="verEditar(' + json[i].id + ')">Ver</button></td>' + 
+					'</tr>');
+				}	
+				document.getElementById('resultados').textContent = "Resultados: " + json.length;		
+											
+			}		
+		}).fail(function(xhr, status, errorThrow){
+			alert("Erro ao buscar usuários por nome: " + xhr.responseText);
+		});	
+	}	
+}
+
+function verEditar(id){
+		var urlAction = document.getElementById('form-user').action;
+		window.location.href = urlAction + '?acao=buscarUserPorId&id='+id;		
+}

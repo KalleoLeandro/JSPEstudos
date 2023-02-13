@@ -47,4 +47,6 @@
 	type="text/css" media="all" />
 <!-- Style.css -->
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/assets/css/style.css">
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/style.css">
+
 </head>

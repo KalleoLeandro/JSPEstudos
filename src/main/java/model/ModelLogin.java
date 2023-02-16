@@ -22,7 +22,14 @@ public class ModelLogin implements Serializable{
 	private String nome;
 	private String email;
 	private String login;
-	private String senha;
+	private String senha;	
+	private boolean isAdmin;
+	private String perfil;	
+	private String sexo;
+	
+	private String fotoUser;
+	private String extensaoFotoUser;
+	
 	
 	
 	
@@ -31,19 +38,23 @@ public class ModelLogin implements Serializable{
 	}
 
 
-	public ModelLogin(Long id,String nome, String email, String login, String senha) {		
+	public ModelLogin(Long id,String nome, String email, String login, String senha, String perfil, String sexo) {		
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
 		this.login = login;
 		this.senha = senha;
+		this.perfil = perfil;
+		this.sexo = sexo;
 	}
 	
-	public ModelLogin(Long id,String nome, String email, String login) {		
+	public ModelLogin(Long id,String nome, String email, String login, String perfil, String sexo) {		
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
 		this.login = login;		
+		this.perfil = perfil;
+		this.sexo = sexo;
 	}
 	
 	public ModelLogin(String login, String senha) {		
@@ -91,6 +102,56 @@ public class ModelLogin implements Serializable{
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	public boolean isAdmin() {
+		return isAdmin;
+	}
+
+
+	public void setAdmin(boolean isAdmin) {
+		this.isAdmin = isAdmin;
+	}
+
+
+	public String getPerfil() {
+		return perfil;
+	}
+
+
+	public void setPerfil(String perfil) {
+		this.perfil = perfil;
+	}
+
+
+	public String getSexo() {
+		return sexo;
+	}
+
+
+	public void setSexo(String sexo) {
+		this.sexo = sexo;
+	}
+
+
+	public String getFotoUser() {
+		return fotoUser;
+	}
+
+
+	public void setFotoUser(String fotoUser) {
+		this.fotoUser = fotoUser;
+	}
+
+
+	public String getExtensaoFotoUser() {
+		return extensaoFotoUser;
+	}
+
+
+	public void setExtensaoFotoUser(String extensaoFotoUser) {
+		this.extensaoFotoUser = extensaoFotoUser;
+	}
+
 
 	@Override
 	public String toString() {

@@ -19,3 +19,22 @@ update table model_login set email = 'teste@teste';
 
 alter table model_login alter column nome set not null;
 alter table model_login alter column email set not null;
+
+alter table model_login add column useradmin boolean default false not null;
+update model_login set useradmin = true where login like '%admin%'
+
+alter table model_login add column usuario_id bigint;
+update model_login set usuario_id = 1;
+alter table model_login alter column usuario_id set not null;
+
+alter table model_login add column perfil varchar(50);
+update model_login set perfil = 'USUÁRIO';
+update model_login set perfil = 'ADMINISTRADOR' where login like '%admin%';
+alter table model_login alter column perfil set not null;
+
+alter table model_login add column sexo varchar(255);
+update model_login set sexo = 'Masculino';
+alter table model_login alter column sexo set not null;
+
+alter table model_login add column fotouser text;
+alter table model_login add column extensaofotouser CHARACTER varying(255);

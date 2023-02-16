@@ -7,9 +7,12 @@
 
 function limparForm(){
 	var elements = document.getElementById('form-user').elements;
-	for(p = 0;p < elements.length;p++){
+	for(p = 0;p < elements.length;p++){	
 		elements[p].value = "";
-	}	 
+	}	
+	if(!document.getElementById('radioMasculino').checked){
+		document.getElementById('radioMasculino').checked = true;
+	}
 }
 
 function deletarUsuarioComAjax(){
@@ -71,4 +74,24 @@ function buscarUsuarios(){
 function verEditar(id){
 		var urlAction = document.getElementById('form-user').action;
 		window.location.href = urlAction + '?acao=buscarUserPorId&id='+id;		
+}
+
+
+function visualizarImg(fotoembase64, filefoto) {
+    
+    
+    var preview = document.getElementById(fotoembase64); // campo IMG html
+    var fileUser = document.getElementById(filefoto).files[0];
+    var reader = new FileReader();
+    
+    reader.onloadend = function (){
+	    preview.src = reader.result; /*Carrega a foto na tela*/
+    };
+    
+    if (fileUser) {
+	  reader.readAsDataURL(fileUser); /*Preview da imagem*/
+    }else {
+	 preview.src=  '';
+    }
+    
 }

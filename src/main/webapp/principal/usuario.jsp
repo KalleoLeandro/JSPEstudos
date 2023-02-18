@@ -39,23 +39,42 @@
 														<!--<span>Add class of <code>.form-control</code> with <code>&lt;input&gt;</code> tag</span>-->
 													</div>
 													<div class="card-block">
-														<form id="form-user" class="form-material" enctype="multipart/form-data"
+														<form id="form-user" class="form-material"
+															enctype="multipart/form-data"
 															action="<%=request.getContextPath()%>/ServletUsuarioController"
 															method="post">
 															<input type="hidden" name="acao" value="">
+															<div class="form-group form-default form-static-label form-font-color">
+																<h5 class="card-title">Dados Pessoais</h5>
+																<!--<span>Add class of <code>.form-control</code> with <code>&lt;input&gt;</code> tag</span>-->
+															</div>															
 															<div class="form-group form-default form-static-label">
 																<input type="text" name="id" id="id"
 																	value="${modelLogin.id}" class="form-control"
 																	readonly="readonly"> <span class="form-bar"></span>
 																<label class="float-label text-dark">ID:</label>
 															</div>
-															<div
-																class="form-group form-default input-group mb-4">
+															<div class="form-group form-default input-group mb-4">
 																<div class="input-group-prepend">
-																	<img alt="Imagem User" id="fotoUser" src="" width="70px;">
-																</div>																
-																<input type="file" accept="image/*" onchange="visualizarImagem('fotoUser', 'selecionarImagem');" class="form-control-file" name="selecionarImagem" id="selecionarImagem">
-															</div>															
+																	<c:if
+																		test="${modelLogin.fotoUser != '' && modelLogin.fotoUser != null}">
+																		<a
+																			href="<%=request.getContextPath()%>/ServletUsuarioController?acao=downloadFoto&id=${modelLogin.id}"><img
+																			alt="Imagem User" id="fotoUser"
+																			src="${modelLogin.fotoUser}" width="70px;"></a>
+																	</c:if>
+																	<c:if
+																		test="${modelLogin.fotoUser == '' || modelLogin.fotoUser == null}">
+																		<img alt="Imagem User" id="fotoUser"
+																			src="assets/images/avatar-blank.jpg" width="70px;">
+																	</c:if>
+																</div>
+
+																<input type="file" accept="image/*"
+																	onchange="visualizarImg('fotoUser', 'selecionarImagem');"
+																	class="form-control-file" name="selecionarImagem"
+																	id="selecionarImagem">
+															</div>
 															<div
 																class="form-group form-default form-static-label form-font-color">
 																<input type="text" name="nome" id="nome"
@@ -72,6 +91,48 @@
 																	class="form-bar"></span> <label
 																	class="float-label text-dark">Email</label>
 															</div>
+															<div class="form-group form-default form-static-label form-font-color">
+																<h5 class="card-title">Dados de Endereço</h5>																
+															</div>
+															<div class="form-group form-default form-static-label">
+                                                                <input onblur="pesquisaCep();" type="text" name="cep" id="cep" class="form-control" required="required" autocomplete="off" value="${modelLogin.cep}">
+                                                                <span class="form-bar"></span>
+                                                                <label class="float-label">Cep</label>
+                                                            </div>
+                                                            
+															<div class="form-group form-default form-static-label">
+                                                                <input type="text" name="logradouro" id="logradouro" class="form-control" required="required" autocomplete="off" value="${modelLogin.logradouro}">
+                                                                <span class="form-bar"></span>
+                                                                <label class="float-label">Logradouro</label>
+                                                            </div> 
+                                                            
+															<div class="form-group form-default form-static-label">
+                                                                <input type="text" name="bairro" id="bairro" class="form-control" required="required" autocomplete="off" value="${modelLogin.bairro}">
+                                                                <span class="form-bar"></span>
+                                                                <label class="float-label">Bairro</label>
+                                                            </div>   
+                                                            
+															<div class="form-group form-default form-static-label">
+                                                                <input type="text" name="localidade" id="localidade" class="form-control" required="required" autocomplete="off" value="${modelLogin.localidade}">
+                                                                <span class="form-bar"></span>
+                                                                <label class="float-label">Localidade</label>
+                                                            </div>     
+                                                            
+															<div class="form-group form-default form-static-label">
+                                                                <input type="text" name="uf" id="uf" class="form-control" required="required" autocomplete="off" value="${modelLogin.uf}">
+                                                                <span class="form-bar"></span>
+                                                                <label class="float-label">Estado</label>
+                                                            </div>     
+                                                            
+															<div class="form-group form-default form-static-label">
+                                                                <input type="text" name="numero" id="numero" class="form-control" required="required" autocomplete="off" value="${modelLogin.numero}">
+                                                                <span class="form-bar"></span>
+                                                                <label class="float-label">Número</label>
+                                                            </div>                                                                                                                                   													
+															<div class="form-group form-default form-static-label form-font-color">
+																<h5 class="card-title">Dados de Acesso</h5>
+																<!--<span>Add class of <code>.form-control</code> with <code>&lt;input&gt;</code> tag</span>-->
+															</div>															
 															<div
 																class="form-group form-default form-static-label form-font-color">
 																<select class="form-control" aria-label="Perfil"
@@ -104,6 +165,7 @@
 																</select> <span class="form-bar"></span> <label
 																	class="float-label text-dark">Perfil</label>
 															</div>
+															
 															<div
 																class="form-group form-default form-static-label form-font-color">
 																<input type="text" name="login" id="login"
@@ -123,36 +185,34 @@
 															<div class="form-group" id="selecaoSexo">
 																<div class="form-check">
 																	<input class="form-check-input" type="radio"
-																		name="sexo" id="radioMasculino" checked="checked" value="Masculino"
-																		<% try{
-																			ModelLogin modelLogin = (ModelLogin) request.getAttribute("modelLogin");
-																			if(modelLogin!= null && modelLogin.getSexo().equals("Masculino")){
-																				out.print(" ");
-																				out.print("checked=\"checked\"");
-																				out.print(" ");
-																			}
-																			}catch(Exception e){
-																				e.printStackTrace();
-																			}																	
-																			
-																		%>>										 
-																		<label class="form-check-label"
-																		for="radioMasculino"> Masculino </label>
+																		name="sexo" id="radioMasculino" checked="checked"
+																		value="Masculino"
+																		<%try {
+	ModelLogin modelLogin = (ModelLogin) request.getAttribute("modelLogin");
+	if (modelLogin != null && modelLogin.getSexo().equals("Masculino")) {
+		out.print(" ");
+		out.print("checked=\"checked\"");
+		out.print(" ");
+	}
+} catch (Exception e) {
+	e.printStackTrace();
+}%>>
+																	<label class="form-check-label" for="radioMasculino">
+																		Masculino </label>
 																</div>
 																<div class="form-check">
 																	<input class="form-check-input" type="radio"
 																		name="sexo" id="radioFeminino" value="Feminino"
-																		<% try{
-																				ModelLogin modelLogin = (ModelLogin) request.getAttribute("modelLogin");
-																				if(modelLogin!= null && modelLogin.getSexo().equals("Feminino")){
-																					out.print(" ");
-																					out.print("checked=\"checked\"");
-																					out.print(" ");
-																				}
-																			}catch(Exception e){
-																				e.printStackTrace();
-																			}																			
-																		%>>
+																		<%try {
+	ModelLogin modelLogin = (ModelLogin) request.getAttribute("modelLogin");
+	if (modelLogin != null && modelLogin.getSexo().equals("Feminino")) {
+		out.print(" ");
+		out.print("checked=\"checked\"");
+		out.print(" ");
+	}
+} catch (Exception e) {
+	e.printStackTrace();
+}%>>
 																	<label class="form-check-label" for="radioFeminino">
 																		Feminino </label>
 																</div>
@@ -194,6 +254,20 @@
 											</tbody>
 										</table>
 									</div>
+
+									<nav aria-label="Paginacao-resultados">
+										<ul class="pagination">
+										    <%
+										    	int totalPagina = (int) request.getAttribute("totalPagina");
+										    	for(int i = 0;i < totalPagina; i++){
+										    		String url = request.getContextPath() + "/ServletUsuarioController?acao=paginar&pagina=" + i*2;
+										    		out.print("<li class=\"page-item\"><a class=\"page-link\" href=\"" + url + "\">"+ (i+1) +"</a></li>");
+										    	} 
+										    %>											
+										</ul>
+									</nav>
+
+
 									<!-- Page-body end -->
 								</div>
 								<div id="styleSelector"></div>

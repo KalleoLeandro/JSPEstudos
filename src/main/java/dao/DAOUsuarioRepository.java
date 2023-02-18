@@ -57,6 +57,18 @@ public class DAOUsuarioRepository {
 				stmt.executeUpdate();
 				connection.commit();
 			}
+			
+			sql = "update model_login set cep = ?, logradouro = ?, numero = ?, bairro = ?, localidade = ?, uf = ? where login = ?";
+			stmt = connection.prepareStatement(sql);
+			stmt.setString(1, modelLogin.getCep());
+			stmt.setString(2, modelLogin.getLogradouro());
+			stmt.setString(3, modelLogin.getNumero());
+			stmt.setString(4, modelLogin.getBairro());
+			stmt.setString(5, modelLogin.getLocalidade());
+			stmt.setString(6, modelLogin.getUf());
+			stmt.executeUpdate();
+			connection.commit();
+			
 
 		} else {
 			String sql = "update model_login set nome = ?, email = ?, login = ?, senha = ?, perfil = ?, sexo = ? where id = ?";
@@ -80,6 +92,18 @@ public class DAOUsuarioRepository {
 				stmt.executeUpdate();
 				connection.commit();
 			}
+			
+			sql = "update model_login set cep = ?, logradouro = ?, numero = ?, bairro = ?, localidade = ?, uf = ? where login = ?";
+			stmt = connection.prepareStatement(sql);
+			stmt.setString(1, modelLogin.getCep());
+			stmt.setString(2, modelLogin.getLogradouro());
+			stmt.setString(3, modelLogin.getNumero());
+			stmt.setString(4, modelLogin.getBairro());
+			stmt.setString(5, modelLogin.getLocalidade());
+			stmt.setString(6, modelLogin.getUf());
+			stmt.setString(7, modelLogin.getLogin());
+			stmt.executeUpdate();
+			connection.commit();
 		}
 		return this.consultaUsuario(modelLogin.getLogin());
 	}
@@ -101,6 +125,7 @@ public class DAOUsuarioRepository {
 				modelLogin.setPerfil(resultado.getString("perfil"));
 				modelLogin.setSexo(resultado.getString("sexo"));
 				modelLogin.setAdmin(resultado.getBoolean("useradmin"));
+				modelLogin.setFotoUser(resultado.getString("fotouser"));
 				
 			}		
 			return modelLogin;		
@@ -120,15 +145,43 @@ public class DAOUsuarioRepository {
 			modelLogin.setSenha(resultado.getString("senha"));
 			modelLogin.setPerfil(resultado.getString("perfil"));
 			modelLogin.setSexo(resultado.getString("sexo"));
-
+			modelLogin.setFotoUser(resultado.getString("fotouser"));
+			modelLogin.setExtensaoFotoUser(resultado.getString("extensaofotouser"));
+			modelLogin.setCep("cep");
+			modelLogin.setLogradouro("logradouro");
+			modelLogin.setNumero("numero");
+			modelLogin.setBairro("bairro");
+			modelLogin.setLocalidade("localidade");
+			modelLogin.setUf("uf");
 		}
 		return modelLogin;
 	}
 
+	public List<ModelLogin> consultaUsuariosListaPaginada(Integer pagina) throws SQLException {
+		List<ModelLogin> lista = new ArrayList<ModelLogin>();
+		String sql = "select * from model_login where useradmin is false order by nome offset ? limit 2";
+		PreparedStatement stmt = connection.prepareStatement(sql);
+		stmt.setInt(1, pagina);
+		ResultSet resultado = stmt.executeQuery();
+		while (resultado.next()) {
+			ModelLogin modelLogin = new ModelLogin();
+			modelLogin.setId(resultado.getLong("id"));
+			modelLogin.setNome(resultado.getString("nome"));
+			modelLogin.setEmail(resultado.getString("email"));
+			modelLogin.setLogin(resultado.getString("login"));
+			modelLogin.setSenha(resultado.getString("senha"));
+			modelLogin.setPerfil(resultado.getString("perfil"));
+			modelLogin.setSexo(resultado.getString("sexo"));
+
+			lista.add(modelLogin);
+		}
+		return lista;
+	}
+	
 	public List<ModelLogin> consultaUsuariosLista() throws SQLException {
 		List<ModelLogin> lista = new ArrayList<ModelLogin>();
 		String sql = "select * from model_login where useradmin is false";
-		PreparedStatement stmt = connection.prepareStatement(sql);
+		PreparedStatement stmt = connection.prepareStatement(sql);		
 		ResultSet resultado = stmt.executeQuery();
 		while (resultado.next()) {
 			ModelLogin modelLogin = new ModelLogin();
@@ -178,6 +231,22 @@ public class DAOUsuarioRepository {
 			lista.add(modelLogin);
 		}
 		return lista;
+	}
+	
+	public int totalPaginas() throws SQLException {
+		String sql = "select count(1) as total from model_login";
+		PreparedStatement stmt = connection.prepareStatement(sql);
+		ResultSet resultado = stmt.executeQuery();
+		resultado.next();
+		Double total = resultado.getDouble("total");
+		Double porPagina = 2.0;
+		Double pagina = total / porPagina;
+		Double resto = pagina % 2;
+		
+		if (resto > 0) {
+			pagina ++;
+		}
+		return pagina.intValue();
 	}
 	
 }

@@ -1,6 +1,8 @@
 package servlets;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -69,6 +71,7 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				String id = request.getParameter("id");
 				ModelLogin modelLogin = daoUsuarioRepository.consultaUsuarioPorId(id);
 				List<ModelLogin> listaRetorno = daoUsuarioRepository.consultaUsuariosLista();
+				request.setAttribute("totalPagina", daoUsuarioRepository.totalPaginas());
 				request.setAttribute("listaLogins", listaRetorno);
 				RequestDispatcher redicionar =  request.getRequestDispatcher("principal/usuario.jsp");				
 				request.setAttribute("modelLogin", modelLogin);
@@ -76,12 +79,28 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				redicionar.forward(request, response);
 				
 			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("listarUsers")) {
-				List<ModelLogin> listaRetorno = daoUsuarioRepository.consultaUsuariosLista();				
+				List<ModelLogin> listaRetorno = daoUsuarioRepository.consultaUsuariosListaPaginada(0);				
 				RequestDispatcher redicionar = request.getRequestDispatcher("principal/usuario.jsp");
+				request.setAttribute("totalPagina", daoUsuarioRepository.totalPaginas());
 				request.setAttribute("listaLogins", listaRetorno);
 				request.setAttribute("NOCHOOSE", "perfil");
 				redicionar.forward(request, response);
 
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("downloadFoto")) {
+				String idUser = request.getParameter("id");
+				ModelLogin modelLogin = daoUsuarioRepository.consultaUsuarioPorId(idUser);
+				if(modelLogin.getFotoUser() != null && !modelLogin.getFotoUser().isEmpty()) {
+					response.setHeader("Content-Disposition", "attachment;filename=arquivo." + modelLogin.getExtensaoFotoUser());
+					response.getOutputStream().write(new Base64().decodeBase64(modelLogin.getFotoUser().split("\\,")[1]));
+				}
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("paginar")) {
+				 Integer offset = Integer.parseInt(request.getParameter("pagina"));
+				 
+				 List<ModelLogin> listaRetorno = daoUsuarioRepository.consultaUsuariosListaPaginada(offset);
+				 
+				 request.setAttribute("listaLogins", listaRetorno);
+			     request.setAttribute("totalPagina", daoUsuarioRepository.totalPaginas());
+				 request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -104,20 +123,30 @@ public class ServletUsuarioController extends ServletGenericUtil {
 			String perfil = request.getParameter("perfil");
 			String sexo = request.getParameter("sexo");
 			String msg = "";
+			String cep = request.getParameter("cep");;
+			String logradouro = request.getParameter("logradouro");;
+			String numero = request.getParameter("numero");;
+			String bairro = request.getParameter("bairro");;
+			String localidade = request.getParameter("localidade");;
+			String uf = request.getParameter("uf");;
+			
+			
 			
 			ModelLogin modelLogin = new ModelLogin(id != null && !id.isEmpty() ? Long.parseLong(id) : null,nome,email,login,senha, perfil,sexo);
-			
+			modelLogin.setCep(cep);
+			modelLogin.setLogradouro(logradouro);
+			modelLogin.setNumero(numero);
+			modelLogin.setBairro(bairro);
+			modelLogin.setLocalidade(localidade);
+			modelLogin.setUf(uf);
 			if (ServletFileUpload.isMultipartContent(request)) {
-				
-				Part part = request.getPart("fileFoto"); /*Pega foto da tela*/
-				
-				if (part.getSize() > 0) {
-					byte[] foto = IOUtils.toByteArray(part.getInputStream()); /*Converte imagem para byte*/
-					@SuppressWarnings("static-access")
-					String imagemBase64 = "data:image/" + part.getContentType().split("\\/")[1] + ";base64," +  new Base64().encodeBase64String(foto);					
-					modelLogin.setFotoUser(imagemBase64);
-					modelLogin.setExtensaoFotoUser(part.getContentType().split("\\/")[1]);
-				}				
+				Part part = request.getPart("selecionarImagem");	
+				InputStream in = part.getInputStream();
+				byte[] foto = IOUtils.toByteArray(in);
+				in.close();				
+				String imagemBase64 = "data:image/" + part.getContentType().split("\\/")[1] + ";base64," +  new Base64().encodeBase64String(foto);					
+				modelLogin.setFotoUser(imagemBase64);
+				modelLogin.setExtensaoFotoUser(part.getContentType().split("\\/")[1]);				
 			}
 			
 			if(daoUsuarioRepository.validarLogin(modelLogin) && modelLogin.getId() == null) {
@@ -131,6 +160,7 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				}
 			}
 			List<ModelLogin> listaRetorno = daoUsuarioRepository.consultaUsuariosLista();
+			request.setAttribute("totalPagina", daoUsuarioRepository.totalPaginas());
 			request.setAttribute("listaLogins", listaRetorno);
 			RequestDispatcher redicionar =  request.getRequestDispatcher("principal/usuario.jsp");
 			request.setAttribute("modelLogin", modelLogin);

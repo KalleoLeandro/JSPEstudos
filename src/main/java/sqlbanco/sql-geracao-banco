@@ -38,3 +38,22 @@ alter table model_login alter column sexo set not null;
 
 alter table model_login add column fotouser text;
 alter table model_login add column extensaofotouser CHARACTER varying(255);
+
+alter table model_login add column cep CHARACTER varying(10);
+alter table model_login add column logradouro CHARACTER varying(255);
+alter table model_login add column bairro CHARACTER varying(255);
+alter table model_login add column localidade CHARACTER varying(255);
+alter table model_login add column uf CHARACTER varying(255);
+alter table model_login add column numero CHARACTER varying(255);
+
+create table telefones (
+	id serial,
+	numero character varying(50) not null,
+	usuario_id bigint not null,
+	usuario_cadastro_id bigint not null
+);
+
+alter table telefones add primary key (id);
+
+alter table telefones add foreign key (usuario_id) references model_login(id);
+alter table telefones add foreign key (usuario_cadastro_id) references model_login(id);

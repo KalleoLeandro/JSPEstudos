@@ -33,6 +33,11 @@ public class ModelTelefones implements Serializable{
 		this.usuario_id = usuario_id;
 		this.usuario_cadastro_id = usuario_cadastro_id;
 	}	
+	
+	public ModelTelefones(String numero, Long usuario_id) {		
+		this.numero = numero;
+		this.usuario_id = usuario_id;		
+	}	
 
 	public Long getId() {
 		return id;

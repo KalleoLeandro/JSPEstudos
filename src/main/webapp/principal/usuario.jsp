@@ -220,10 +220,17 @@
 															<button type="button"
 																class="btn btn-primary  waves-effect waves-light"
 																onclick="limparForm();">Novo</button>
-															<button class="btn btn-success  waves-effect waves-light">Salvar</button>
-															<button type="button" id="excluir"
+															<c:if test="${modelLogin.id > 0}">
+																<button class="btn btn-success  waves-effect waves-light">Salvar</button>
+															</c:if>
+															<c:if test="${modelLogin.id > 0}">
+																<button type="button" id="excluir"
 																class="btn btn-info  waves-effect waves-light"
 																onclick="deletarUsuarioComAjax();">Excluir</button>
+															</c:if>
+																<c:if test="${modelLogin.id > 0}">
+																	<a href="<%=request.getContextPath() %>/ServletTelefoneController?idUser=${modelLogin.id}" class="btn btn-primary  waves-effect waves-light">Telefones</a>
+																</c:if>
 															<button type="button" class="btn btn-warning"
 																data-toggle="modal" data-target="#modalExemplo">Pesquisar</button>
 														</form>

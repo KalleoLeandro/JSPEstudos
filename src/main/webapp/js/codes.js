@@ -5,6 +5,14 @@
  * @since 11/02/2023
  */
 
+$("#numero").keypress(function(event){
+	return /\d/.test(String.fromCharCode(event.keyCode));
+});
+
+$("#cep").keypress(function(event){
+	return /\d/.test(String.fromCharCode(event.keyCode));
+});
+
 function limparForm() {
 	var elements = document.getElementById('form-user').elements;
 	for (p = 0; p < elements.length; p++) {

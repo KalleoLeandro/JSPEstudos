@@ -4,6 +4,7 @@
 package model;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.Objects;
 
 /**
@@ -37,6 +38,9 @@ public class ModelLogin implements Serializable{
 	private String uf;
 	private String numero;
 	
+	private Date dataNascimento;
+	
+	private Double rendaMensal;
 	
 	
 	public ModelLogin() {
@@ -44,7 +48,7 @@ public class ModelLogin implements Serializable{
 	}
 
 
-	public ModelLogin(Long id,String nome, String email, String login, String senha, String perfil, String sexo) {		
+	public ModelLogin(Long id,String nome, String email, String login, String senha, String perfil, String sexo, Double rendaMensal) {		
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
@@ -52,6 +56,7 @@ public class ModelLogin implements Serializable{
 		this.senha = senha;
 		this.perfil = perfil;
 		this.sexo = sexo;
+		this.rendaMensal = rendaMensal;
 	}
 	
 	public ModelLogin(Long id,String nome, String email, String login, String perfil, String sexo) {		
@@ -216,6 +221,26 @@ public class ModelLogin implements Serializable{
 
 	public void setNumero(String numero) {
 		this.numero = numero;
+	}
+
+
+	public Date getDataNascimento() {
+		return dataNascimento;
+	}
+
+
+	public void setDataNascimento(Date dataNascimento) {
+		this.dataNascimento = dataNascimento;
+	}
+
+
+	public Double getRendaMensal() {
+		return rendaMensal;
+	}
+
+
+	public void setRendaMensal(Double rendaMensal) {
+		this.rendaMensal = rendaMensal;
 	}
 
 

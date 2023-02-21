@@ -13,6 +13,35 @@ $("#cep").keypress(function(event){
 	return /\d/.test(String.fromCharCode(event.keyCode));
 });
 
+
+$(function (){
+	$("#rendaMensal").maskMoney({prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false});
+})
+
+const formatter = new Intl.NumberFormat('pt-BR', {
+    currency : 'BRL',
+    minimumFractionDigits : 2
+});
+
+$("#rendamensal").val(formatter.format($("#rendamensal").val()));
+
+$("#rendamensal").focus();
+
+
+$( function() {
+	  
+	  $("#dataNascimento").datepicker({
+		    dateFormat: 'dd/mm/yy',
+		    dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+		    dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+		    dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+		    monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+		    monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+		    nextText: 'Próximo',
+		    prevText: 'Anterior'
+		});
+} );
+
 function limparForm() {
 	var elements = document.getElementById('form-user').elements;
 	for (p = 0; p < elements.length; p++) {

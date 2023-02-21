@@ -57,3 +57,7 @@ alter table telefones add primary key (id);
 
 alter table telefones add foreign key (usuario_id) references model_login(id);
 alter table telefones add foreign key (usuario_cadastro_id) references model_login(id);
+
+alter table model_login add column data_nascimento date;
+
+alter table model_login add column renda_mensal numeric(12,3);

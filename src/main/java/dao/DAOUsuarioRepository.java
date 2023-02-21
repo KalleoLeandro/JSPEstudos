@@ -4,6 +4,7 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,7 +32,7 @@ public class DAOUsuarioRepository {
 
 	public ModelLogin gravarUsuario(ModelLogin modelLogin, Long userLogado) throws SQLException {
 		if (modelLogin.isNovo()) {
-			String sql = "insert into model_login(nome,email,login,senha, usuario_id, perfil, useradmin, sexo) values(?,?,?,?,?,?,?,?)";
+			String sql = "insert into model_login(nome,email,login,senha, usuario_id, perfil, useradmin, sexo,data_nascimento, renda_mensal) values(?,?,?,?,?,?,?,?,?,?)";
 			PreparedStatement stmt = connection.prepareStatement(sql);
 			stmt.setString(1, modelLogin.getNome());
 			stmt.setString(2, modelLogin.getEmail());
@@ -45,6 +46,8 @@ public class DAOUsuarioRepository {
 				stmt.setBoolean(7, false);
 			}
 			stmt.setString(8, modelLogin.getSexo());
+			stmt.setDate(9, modelLogin.getDataNascimento());
+			stmt.setDouble(10, modelLogin.getRendaMensal());
 			stmt.execute();
 			connection.commit();
 
@@ -71,7 +74,7 @@ public class DAOUsuarioRepository {
 			
 
 		} else {
-			String sql = "update model_login set nome = ?, email = ?, login = ?, senha = ?, perfil = ?, sexo = ? where id = ?";
+			String sql = "update model_login set nome = ?, email = ?, login = ?, senha = ?, perfil = ?, sexo = ?, data_nascimento = ?, renda_mensal = ? where id = ?";
 			PreparedStatement stmt = connection.prepareStatement(sql);
 			stmt.setString(1, modelLogin.getNome());
 			stmt.setString(2, modelLogin.getEmail());
@@ -79,7 +82,9 @@ public class DAOUsuarioRepository {
 			stmt.setString(4, modelLogin.getSenha());
 			stmt.setString(5, modelLogin.getPerfil());
 			stmt.setString(6, modelLogin.getSexo());
-			stmt.setLong(7, modelLogin.getId());
+			stmt.setDate(7, modelLogin.getDataNascimento());
+			stmt.setDouble(8, modelLogin.getRendaMensal());
+			stmt.setLong(9, modelLogin.getId());
 			stmt.executeUpdate();
 			connection.commit();
 
@@ -144,15 +149,17 @@ public class DAOUsuarioRepository {
 			modelLogin.setLogin(resultado.getString("login"));
 			modelLogin.setSenha(resultado.getString("senha"));
 			modelLogin.setPerfil(resultado.getString("perfil"));
-			modelLogin.setSexo(resultado.getString("sexo"));
+			modelLogin.setSexo(resultado.getString("sexo"));			
+			modelLogin.setDataNascimento(resultado.getDate("data_nascimento"));
 			modelLogin.setFotoUser(resultado.getString("fotouser"));
 			modelLogin.setExtensaoFotoUser(resultado.getString("extensaofotouser"));
-			modelLogin.setCep("cep");
-			modelLogin.setLogradouro("logradouro");
-			modelLogin.setNumero("numero");
-			modelLogin.setBairro("bairro");
-			modelLogin.setLocalidade("localidade");
-			modelLogin.setUf("uf");
+			modelLogin.setCep(resultado.getString("cep"));
+			modelLogin.setLogradouro(resultado.getString("logradouro"));
+			modelLogin.setNumero(resultado.getString("numero"));
+			modelLogin.setBairro(resultado.getString("bairro"));
+			modelLogin.setLocalidade(resultado.getString("localidade"));
+			modelLogin.setUf(resultado.getString("uf"));
+			modelLogin.setRendaMensal(resultado.getDouble("renda_mensal"));
 		}
 		return modelLogin;
 	}

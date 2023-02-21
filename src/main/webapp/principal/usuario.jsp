@@ -85,6 +85,22 @@
 															</div>
 															<div
 																class="form-group form-default form-static-label form-font-color">
+																<input type="date" name="dataNascimento" id="dataNascimento"
+																	value="${modelLogin.dataNascimento}" class="form-control"
+																	required="required" autocomplete="off"> <span
+																	class="form-bar"></span> <label
+																	class="float-label text-dark">Data de Nascimento</label>
+															</div>
+															<div
+																class="form-group form-default form-static-label form-font-color">
+																<input type="text" name="rendaMensal" id="rendaMensal"
+																	value="${modelLogin.rendaMensal}" class="form-control"
+																	required="required" autocomplete="off"> <span
+																	class="form-bar" ></span> <label
+																	class="float-label text-dark">Renda Mensal</label>
+															</div>
+															<div
+																class="form-group form-default form-static-label form-font-color">
 																<input type="text" name="email" id="email"
 																	value="${modelLogin.email}" class="form-control"
 																	required="required" autocomplete="off"> <span

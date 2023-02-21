@@ -2,7 +2,8 @@ package servlets;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -44,7 +45,7 @@ public class ServletUsuarioController extends ServletGenericUtil {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String msg = "";
-		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
 		try {
 			String acao = request.getParameter("acao");
 			if(acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("deletar")) {
@@ -113,7 +114,7 @@ public class ServletUsuarioController extends ServletGenericUtil {
 
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
-		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
 		try {		
 			String id = request.getParameter("id");
 			String nome = request.getParameter("nome");
@@ -123,22 +124,26 @@ public class ServletUsuarioController extends ServletGenericUtil {
 			String perfil = request.getParameter("perfil");
 			String sexo = request.getParameter("sexo");
 			String msg = "";
-			String cep = request.getParameter("cep");;
-			String logradouro = request.getParameter("logradouro");;
-			String numero = request.getParameter("numero");;
-			String bairro = request.getParameter("bairro");;
-			String localidade = request.getParameter("localidade");;
-			String uf = request.getParameter("uf");;
+			String cep = request.getParameter("cep");
+			String logradouro = request.getParameter("logradouro");
+			String numero = request.getParameter("numero");
+			String bairro = request.getParameter("bairro");
+			String localidade = request.getParameter("localidade");
+			String uf = request.getParameter("uf");
+			String dataNascimento = request.getParameter("dataNascimento");			
+			String rendaMensalTexto = request.getParameter("rendaMensal");
+			rendaMensalTexto = rendaMensalTexto.replace(".", "");
+			rendaMensalTexto = rendaMensalTexto.replaceAll(",", ".");			
+			Double rendaMensal  = Double.parseDouble(rendaMensalTexto);
 			
-			
-			
-			ModelLogin modelLogin = new ModelLogin(id != null && !id.isEmpty() ? Long.parseLong(id) : null,nome,email,login,senha, perfil,sexo);
+			ModelLogin modelLogin = new ModelLogin(id != null && !id.isEmpty() ? Long.parseLong(id) : null,nome,email,login,senha, perfil,sexo, rendaMensal);
 			modelLogin.setCep(cep);
 			modelLogin.setLogradouro(logradouro);
 			modelLogin.setNumero(numero);
 			modelLogin.setBairro(bairro);
 			modelLogin.setLocalidade(localidade);
-			modelLogin.setUf(uf);
+			modelLogin.setUf(uf);						
+			modelLogin.setDataNascimento(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(dataNascimento).getTime()));			
 			if (ServletFileUpload.isMultipartContent(request)) {
 				Part part = request.getPart("selecionarImagem");	
 				InputStream in = part.getInputStream();

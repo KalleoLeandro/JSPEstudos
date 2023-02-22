@@ -22,6 +22,7 @@ import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import bean.SalarioGraficoBean;
 import dao.DAOUsuarioRepository;
 import model.ModelLogin;
 import util.ReportUtil;
@@ -149,6 +150,22 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				
 				response.setHeader("Content-Disposition", "attachment;filename=arquivo." + extensao);
 				response.getOutputStream().write(relatorio);				
+			} else if(acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("graficoSalario")) {
+				String dataInicial = request.getParameter("dataInicial");
+				String dataFinal = request.getParameter("dataFinal");
+				if(dataInicial == null || dataInicial.isEmpty() || dataFinal == null || dataFinal.isEmpty()) {
+					SalarioGraficoBean salarioGraficoBean = daoUsuarioRepository.montarGraficoMediaSalarial(super.getUserLogado(request));
+					ObjectMapper mapper = new ObjectMapper();
+					String json = mapper.writeValueAsString(salarioGraficoBean);
+					response.getWriter().write(json);
+				} else {
+					Date data1 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(dataInicial).getTime());
+					Date data2 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(dataFinal).getTime());
+					SalarioGraficoBean salarioGraficoBean = daoUsuarioRepository.montarGraficoMediaSalarial(super.getUserLogado(request),data1,data2);
+					ObjectMapper mapper = new ObjectMapper();
+					String json = mapper.writeValueAsString(salarioGraficoBean);
+					response.getWriter().write(json);
+				}
 			}
 		}catch (Exception e) {
 			e.printStackTrace();

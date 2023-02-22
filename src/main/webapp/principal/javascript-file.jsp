@@ -38,3 +38,4 @@
 <script type="text/javascript" src="<%=request.getContextPath()%>/js/codes.js"></script>
 
 <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery.maskMoney.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

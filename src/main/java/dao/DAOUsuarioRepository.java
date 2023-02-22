@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import bean.SalarioGraficoBean;
 import connection.SingleConnectionBanco;
 import model.ModelLogin;
 
@@ -311,4 +312,43 @@ public class DAOUsuarioRepository {
 		return pagina.intValue();
 	}
 	
+	public SalarioGraficoBean montarGraficoMediaSalarial(Long userLogado) throws SQLException {
+		List<String> cargos = new ArrayList<String>();
+		List<Double> salarios = new ArrayList<Double>();
+		String sql = "select avg(renda_mensal) as media_salarial, perfil from model_login where usuario_id = ? group by perfil";
+		PreparedStatement stmt = connection.prepareStatement(sql);
+		stmt.setLong(1, userLogado);
+		ResultSet resultado = stmt.executeQuery();
+		SalarioGraficoBean salarioGraficoBean = new SalarioGraficoBean();
+		while (resultado.next()) {
+			Double  medial_salarial = resultado.getDouble("media_salarial");
+			String perfil = resultado.getString("perfil");
+			cargos.add(perfil);
+			salarios.add(medial_salarial);
+		}
+		salarioGraficoBean.setCargos(cargos);
+		salarioGraficoBean.setSalarios(salarios);
+		return salarioGraficoBean;
+	}
+	
+	public SalarioGraficoBean montarGraficoMediaSalarial(Long userLogado, Date dataInicial, Date dataFinal) throws SQLException {
+		List<String> cargos = new ArrayList<String>();
+		List<Double> salarios = new ArrayList<Double>();
+		String sql = "select avg(renda_mensal) as media_salarial, perfil from model_login where usuario_id = ? and data_nascimento >= ? and data_nascimento <= ? group by perfil";
+		PreparedStatement stmt = connection.prepareStatement(sql);
+		stmt.setLong(1, userLogado);
+		stmt.setDate(2, dataInicial);
+		stmt.setDate(3, dataFinal);		
+		ResultSet resultado = stmt.executeQuery();
+		SalarioGraficoBean salarioGraficoBean = new SalarioGraficoBean();
+		while (resultado.next()) {
+			Double  medial_salarial = resultado.getDouble("media_salarial");
+			String perfil = resultado.getString("perfil");
+			cargos.add(perfil);
+			salarios.add(medial_salarial);
+		}
+		salarioGraficoBean.setCargos(cargos);
+		salarioGraficoBean.setSalarios(salarios);
+		return salarioGraficoBean;
+	}
 }

@@ -5,22 +5,22 @@
  * @since 11/02/2023
  */
 
-$("#numero").keypress(function(event){
+$("#numero").keypress(function(event) {
 	return /\d/.test(String.fromCharCode(event.keyCode));
 });
 
-$("#cep").keypress(function(event){
+$("#cep").keypress(function(event) {
 	return /\d/.test(String.fromCharCode(event.keyCode));
 });
 
 
-$(function (){
-	$("#rendaMensal").maskMoney({prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false});
+$(function() {
+	$("#rendaMensal").maskMoney({ prefix: 'R$ ', allowNegative: true, thousands: '.', decimal: ',', affixesStay: false });
 })
 
 const formatter = new Intl.NumberFormat('pt-BR', {
-    currency : 'BRL',
-    minimumFractionDigits : 2
+	currency: 'BRL',
+	minimumFractionDigits: 2
 });
 
 $("#rendamensal").val(formatter.format($("#rendamensal").val()));
@@ -28,18 +28,18 @@ $("#rendamensal").val(formatter.format($("#rendamensal").val()));
 $("#rendamensal").focus();
 
 
-$( function() {	  
-	  $("#dataNascimento #dataInicial #dataFinal").datepicker({
-		    dateFormat: 'dd/mm/yy',
-		    dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
-		    dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
-		    dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
-		    monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
-		    monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
-		    nextText: 'Próximo',
-		    prevText: 'Anterior'
-		});
-} );
+$(function() {
+	$("#dataNascimento #dataInicial #dataFinal").datepicker({
+		dateFormat: 'dd/mm/yy',
+		dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+		dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+		dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+		monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+		monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+		nextText: 'Próximo',
+		prevText: 'Anterior'
+	});
+});
 
 function limparForm() {
 	var elements = document.getElementById('form-user').elements;
@@ -55,7 +55,6 @@ function deletarUsuarioComAjax() {
 	if (confirm("Deseja realmente excluir este usuário?")) {
 		var urlAction = document.getElementById('form-user').action;
 		var idUser = document.getElementById('id').value;
-		debugger;
 		$.ajax({
 			method: "GET",
 			url: urlAction,
@@ -144,8 +143,8 @@ function pesquisaCep() {
 		if (validacep.test(cep)) {
 
 			//Consulta o webservice viacep.com.br/
-			$.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?", function(dados) {				
-				if (!("erro" in dados)) {					
+			$.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?", function(dados) {
+				if (!("erro" in dados)) {
 					$("#logradouro").val(dados.logradouro);
 					$("#bairro").val(dados.bairro);
 					$("#localidade").val(dados.localidade);
@@ -164,17 +163,78 @@ function pesquisaCep() {
 	}
 }
 
-function imprimirHtml(){
-	document.getElementById('acaoRelatorioImprimirTipo').value="imprimirRelatorioUser";
-	$('#form-user').submit();
-}
-	
-function imprimirPdf(){
-	document.getElementById('acaoRelatorioImprimirTipo').value="imprimirRelatorioPDF";
+function imprimirHtml() {
+	document.getElementById('acaoRelatorioImprimirTipo').value = "imprimirRelatorioUser";
 	$('#form-user').submit();
 }
 
-function imprimirExcel(){	
-	document.getElementById('acaoRelatorioImprimirTipo').value="imprimirRelatorioExcel";
+function imprimirPdf() {
+	document.getElementById('acaoRelatorioImprimirTipo').value = "imprimirRelatorioPDF";
 	$('#form-user').submit();
+}
+
+function imprimirExcel() {
+	document.getElementById('acaoRelatorioImprimirTipo').value = "imprimirRelatorioExcel";
+	$('#form-user').submit();
+}
+
+var chart = new Chart(null, null);
+var teste = false;
+
+function gerarGrafico() {
+	const ctx = document.getElementById('myChart');
+
+	var urlAction = document.getElementById('form-user').action;
+	var dataInicial = document.getElementById('dataInicial').value;
+	var dataFinal = document.getElementById('dataFinal').value;
+
+	$.ajax({
+		method: "GET",
+		url: urlAction,
+		data: "dataInicial=" + dataInicial + "&dataFinal=" + dataFinal + "&acao=graficoSalario",
+		success: function(response) {
+			var json = JSON.parse(response);
+			var cargos = json.cargos;
+			var salarios = json.salarios;
+			var config = {
+				type: 'bar',
+				data: {
+					labels: cargos,
+					datasets: [{
+						label: 'Médial Salarial por Cargo',
+						data: salarios,
+						backgroundColor: [
+							'rgba(255, 99, 132, 0.2)',
+							'rgba(255, 159, 64, 0.2)',
+						],
+						borderColor: [
+							'rgb(255, 99, 132)',
+							'rgb(255, 159, 64)',
+						],
+						borderWidth: 1
+					}]
+				},
+				options: {
+					scales: {
+						y: {
+							beginAtZero: true,
+							max: 100000
+						}
+					}
+				}
+			}
+			
+			if(teste){
+				chart.destroy();
+				chart = new Chart(ctx,config);
+			} else {
+				teste = !teste;
+				chart = new Chart(ctx,config);
+			}
+		}
+	}).fail(function(xhr, status, errorThrow) {
+		alert("Erro ao buscar dados para o gráfico: " + xhr.responseText);
+	});
+
+
 }

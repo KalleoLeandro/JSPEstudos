@@ -170,7 +170,11 @@ function imprimirHtml(){
 }
 	
 function imprimirPdf(){
-	debugger;
 	document.getElementById('acaoRelatorioImprimirTipo').value="imprimirRelatorioPDF";
+	$('#form-user').submit();
+}
+
+function imprimirExcel(){	
+	document.getElementById('acaoRelatorioImprimirTipo').value="imprimirRelatorioExcel";
 	$('#form-user').submit();
 }

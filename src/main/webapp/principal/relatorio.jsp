@@ -57,6 +57,7 @@
 																	<div class="col-md-4">
 																		<button type="button" onclick="imprimirHtml();" class="btn btn-primary">Detalhar Dados</button>
 																		<button type="button" onclick="imprimirPdf();" class="btn btn-info">Imprimir PDF</button>
+																		<button type="button" onclick="imprimirExcel();" class="btn btn-success">Imprimir Excel</button>
 																	</div>
 																</div>
 

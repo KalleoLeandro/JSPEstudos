@@ -28,9 +28,8 @@ $("#rendamensal").val(formatter.format($("#rendamensal").val()));
 $("#rendamensal").focus();
 
 
-$( function() {
-	  
-	  $("#dataNascimento").datepicker({
+$( function() {	  
+	  $("#dataNascimento #dataInicial #dataFinal").datepicker({
 		    dateFormat: 'dd/mm/yy',
 		    dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
 		    dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
@@ -163,4 +162,15 @@ function pesquisaCep() {
 	} //end if.
 	else {
 	}
+}
+
+function imprimirHtml(){
+	document.getElementById('acaoRelatorioImprimirTipo').value="imprimirRelatorioUser";
+	$('#form-user').submit();
+}
+	
+function imprimirPdf(){
+	debugger;
+	document.getElementById('acaoRelatorioImprimirTipo').value="imprimirRelatorioPDF";
+	$('#form-user').submit();
 }

@@ -5,6 +5,8 @@ package model;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -41,6 +43,8 @@ public class ModelLogin implements Serializable{
 	private Date dataNascimento;
 	
 	private Double rendaMensal;
+	
+	private List<ModelTelefones> listaTelefones = new ArrayList<ModelTelefones>();
 	
 	
 	public ModelLogin() {
@@ -241,6 +245,16 @@ public class ModelLogin implements Serializable{
 
 	public void setRendaMensal(Double rendaMensal) {
 		this.rendaMensal = rendaMensal;
+	}
+
+
+	public List<ModelTelefones> getListaTelefones() {
+		return listaTelefones;
+	}
+
+
+	public void setListaTelefones(List<ModelTelefones> listaTelefones) {
+		this.listaTelefones = listaTelefones;
 	}
 
 

@@ -8,6 +8,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,8 @@ import model.ModelLogin;
 public class DAOUsuarioRepository {
 
 	private Connection connection;
+	
+	private DAOTelefoneRepository daoTelefoneRepository = new DAOTelefoneRepository();
 
 	public DAOUsuarioRepository() {
 		connection = SingleConnectionBanco.getConnection();
@@ -199,6 +202,58 @@ public class DAOUsuarioRepository {
 			modelLogin.setSenha(resultado.getString("senha"));
 			modelLogin.setPerfil(resultado.getString("perfil"));
 			modelLogin.setSexo(resultado.getString("sexo"));
+			modelLogin.setDataNascimento(resultado.getDate("data_nascimento"));
+			modelLogin.setRendaMensal(resultado.getDouble("renda_mensal"));
+			lista.add(modelLogin);
+		}
+		return lista;
+	}
+	
+	public List<ModelLogin> consultaUsuariosLista(Long userLogado) throws SQLException {
+		List<ModelLogin> lista = new ArrayList<ModelLogin>();
+		String sql = "select * from model_login where useradmin is false and usuario_id = ?";
+		PreparedStatement stmt = connection.prepareStatement(sql);		
+		stmt.setLong(1, userLogado);
+		ResultSet resultado = stmt.executeQuery();
+		while (resultado.next()) {
+			ModelLogin modelLogin = new ModelLogin();
+			modelLogin.setId(resultado.getLong("id"));
+			modelLogin.setNome(resultado.getString("nome"));
+			modelLogin.setEmail(resultado.getString("email"));
+			modelLogin.setLogin(resultado.getString("login"));
+			modelLogin.setSenha(resultado.getString("senha"));
+			modelLogin.setPerfil(resultado.getString("perfil"));
+			modelLogin.setSexo(resultado.getString("sexo"));
+			modelLogin.setDataNascimento(resultado.getDate("data_nascimento"));
+			modelLogin.setRendaMensal(resultado.getDouble("renda_mensal"));
+			modelLogin.setListaTelefones(daoTelefoneRepository.listaFones(modelLogin.getId()));
+
+			lista.add(modelLogin);
+		}
+		return lista;
+	}
+	
+	public List<ModelLogin> consultaUsuariosLista(Long userLogado, Date dataInicial, Date dataFinal) throws SQLException {
+		List<ModelLogin> lista = new ArrayList<ModelLogin>();
+		String sql = "select * from model_login where useradmin is false and usuario_id = ? and data_nascimento >= ? and data_nascimento <= ?";
+		PreparedStatement stmt = connection.prepareStatement(sql);		
+		stmt.setLong(1, userLogado);		
+		stmt.setDate(2, dataInicial);
+		stmt.setDate(3, dataFinal);
+		
+		ResultSet resultado = stmt.executeQuery();
+		while (resultado.next()) {
+			ModelLogin modelLogin = new ModelLogin();
+			modelLogin.setId(resultado.getLong("id"));
+			modelLogin.setNome(resultado.getString("nome"));
+			modelLogin.setEmail(resultado.getString("email"));
+			modelLogin.setLogin(resultado.getString("login"));
+			modelLogin.setSenha(resultado.getString("senha"));
+			modelLogin.setPerfil(resultado.getString("perfil"));
+			modelLogin.setSexo(resultado.getString("sexo"));
+			modelLogin.setDataNascimento(resultado.getDate("data_nascimento"));
+			modelLogin.setRendaMensal(resultado.getDouble("renda_mensal"));
+			modelLogin.setListaTelefones(daoTelefoneRepository.listaFones(modelLogin.getId()));
 
 			lista.add(modelLogin);
 		}

@@ -1,9 +1,11 @@
 package servlets;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -22,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.DAOUsuarioRepository;
 import model.ModelLogin;
+import util.ReportUtil;
 
 /**
  * Classe Servlet para Usuario
@@ -102,6 +105,40 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				 request.setAttribute("listaLogins", listaRetorno);
 			     request.setAttribute("totalPagina", daoUsuarioRepository.totalPaginas());
 				 request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("imprimirRelatorioUser")){
+				String dataInicial = request.getParameter("dataInicial");
+				String dataFinal = request.getParameter("dataFinal");
+				
+				if(dataInicial == null || dataInicial.isEmpty() || dataFinal == null || dataFinal.isEmpty()) {
+					request.setAttribute("listaUser", daoUsuarioRepository.consultaUsuariosLista(super.getUserLogado(request)));
+				} else {
+					Date data1 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(dataInicial).getTime());
+					Date data2 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(dataFinal).getTime());
+					request.setAttribute("listaUser", daoUsuarioRepository.consultaUsuariosLista(super.getUserLogado(request), data1, data2));
+				}
+				
+				request.setAttribute("dataInicial", dataInicial);
+				request.setAttribute("dataFinal", dataFinal);
+				request.getRequestDispatcher("principal/relatorio.jsp").forward(request, response);
+			} else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("imprimirRelatorioPDF")) {
+				String dataInicial = request.getParameter("dataInicial");
+				String dataFinal = request.getParameter("dataFinal");
+				
+				List<ModelLogin> lista = null;
+				if(dataInicial == null || dataInicial.isEmpty() || dataFinal == null || dataFinal.isEmpty()) {
+					lista = daoUsuarioRepository.consultaUsuariosLista(super.getUserLogado(request));
+				} else {
+					Date data1 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(dataInicial).getTime());
+					Date data2 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(dataFinal).getTime());
+					lista = daoUsuarioRepository.consultaUsuariosLista(super.getUserLogado(request), data1, data2);
+				}
+				
+				HashMap<String, Object> params = new HashMap<String,Object>();
+				params.put("Param_sub_report", request.getServletContext().getRealPath("WEB-INF\\classes\\relatorio") + File.separator);
+					
+				byte[] relatorio = new ReportUtil().geraRelatorioPdf(lista, "relatorio", params, request.getServletContext());
+				response.setHeader("Content-Disposition", "attachment;filename=arquivo.pdf");
+				response.getOutputStream().write(relatorio);				
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
